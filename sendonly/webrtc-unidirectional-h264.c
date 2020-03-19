@@ -190,7 +190,9 @@ create_receiver_entry (SoupWebsocketConnection * connection)
       "v4l2src ! videorate ! video/x-raw,width=640,height=360,framerate=15/1 ! videoconvert ! queue max-size-buffers=1 ! x264enc bitrate=600 speed-preset=ultrafast tune=zerolatency key-int-max=15 ! video/x-h264,profile=constrained-baseline ! queue max-size-time=100000000 ! h264parse ! "
       "rtph264pay config-interval=-1 name=payloader ! "
       "application/x-rtp,media=video,encoding-name=H264,payload="
-      RTP_PAYLOAD_TYPE " ! webrtcbin. ", &error);
+      RTP_PAYLOAD_TYPE " ! webrtcbin. pulsesrc ! audioconvert ! audioresample ! queue ! opusenc ! rtpopuspay !  queue max-size-time=100000000 ! application/x-rtp,media=audio,encoding-name=OPUS,payload=97 ! webrtcbin. videotestsrc is-live=true pattern=ball ! videoconvert ! queue ! x264enc bitrate=600 speed-preset=ultrafast tune=zerolatency key-int-max=15 ! video/x-h264,profile=constrained-baseline ! queue max-size-time=100000000 ! h264parse ! "
+      "rtph264pay config-interval=-1 name=payloader2 ! "
+      "application/x-rtp,media=video,encoding-name=H264,payload=98 ! webrtcbin. ", &error);
   if (error != NULL) {
     g_error ("Could not create WebRTC pipeline: %s\n", error->message);
     g_error_free (error);
