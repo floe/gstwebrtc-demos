@@ -151,7 +151,7 @@ const gchar *html_source = " \n \
  \n \
       window.onload = function() { \n \
         var vidstream = document.getElementById(\"stream\"); \n \
-        var config = { 'iceServers': [{ 'urls': 'stun:" STUN_SERVER "' }] }; \n\
+        var config = { 'iceServers': [] }; \n\
         playStream(vidstream, null, null, null, config, function (errmsg) { console.error(errmsg); }); \n \
       }; \n \
  \n \
@@ -186,7 +186,7 @@ create_receiver_entry (SoupWebsocketConnection * connection)
       G_CALLBACK (soup_websocket_message_cb), (gpointer) receiver_entry);
 
   error = NULL;
-  receiver_entry->pipeline = gst_parse_launch ("webrtcbin name=webrtcbin stun-server=stun://" STUN_SERVER " "
+  receiver_entry->pipeline = gst_parse_launch ("webrtcbin name=webrtcbin " // stun-server=stun://" STUN_SERVER " "
       "v4l2src ! videorate ! video/x-raw,width=640,height=360,framerate=15/1 ! videoconvert ! queue max-size-buffers=1 ! x264enc bitrate=600 speed-preset=ultrafast tune=zerolatency key-int-max=15 ! video/x-h264,profile=constrained-baseline ! queue max-size-time=100000000 ! h264parse ! "
       "rtph264pay config-interval=-1 name=payloader ! "
       "application/x-rtp,media=video,encoding-name=H264,payload="
