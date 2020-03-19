@@ -67,6 +67,7 @@ const gchar *html_source = " \n \
     <script type=\"text/javascript\" src=\"https://webrtc.github.io/adapter/adapter-latest.js\"></script> \n \
     <script type=\"text/javascript\"> \n \
       var html5VideoElement; \n \
+      var html5VideoElement2; \n \
       var websocketConnection; \n \
       var webrtcPeerConnection; \n \
       var webrtcConfiguration; \n \
@@ -131,6 +132,13 @@ const gchar *html_source = " \n \
         } \n \
       } \n \
  \n \
+      function onvideoplay(event) { \n \
+        var stream1 = html5VideoElement.srcObject; \n \
+        var vtracks = stream1.getVideoTracks(); \n \
+        html5VideoElement.srcObject.removeTrack( vtracks[1] ); \n \
+        var stream2 = new MediaStream( [ vtracks[1] ] ); \n \
+        html5VideoElement2.srcObject = stream2; \n \
+      } \n \
  \n \
       function playStream(videoElement, hostname, port, path, configuration, reportErrorCB) { \n \
         var l = window.location;\n \
@@ -151,8 +159,10 @@ const gchar *html_source = " \n \
  \n \
       window.onload = function() { \n \
         var vidstream = document.getElementById(\"stream\"); \n \
+        html5VideoElement2 = document.getElementById(\"stream2\"); \n \
         var config = { 'iceServers': [] }; \n\
         playStream(vidstream, null, null, null, config, function (errmsg) { console.error(errmsg); }); \n \
+        vidstream.onplay = onvideoplay; \n \
       }; \n \
  \n \
     </script> \n \
@@ -161,6 +171,7 @@ const gchar *html_source = " \n \
   <body> \n \
     <div> \n \
       <video id=\"stream\" autoplay playsinline>Your browser does not support video</video> \n \
+      <video id=\"stream2\" autoplay playsinline>Your browser does not support video</video> \n \
     </div> \n \
   </body> \n \
 </html> \n \
